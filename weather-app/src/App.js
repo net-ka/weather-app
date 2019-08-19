@@ -38,9 +38,13 @@ class App extends React.Component {
     }
 
     if (city && "name" in data) {
+      const timeDif = data.timezone / 3600;
       const sunriseDate = new Date(data.sys.sunrise * 1000);
-      let sunriseHour = sunriseDate.getHours();
-      let sunriseMinutes = sunriseDate.getMinutes();
+      let sunriseHour = sunriseDate.getUTCHours() + timeDif;
+      if (sunriseHour > 24) {
+        sunriseHour = timeDif - (24 - sunriseDate.getUTCHours());
+      }
+      let sunriseMinutes = sunriseDate.getUTCMinutes();
 
       if (sunriseHour < 10) {
         sunriseHour = '0' + sunriseHour;
@@ -53,8 +57,11 @@ class App extends React.Component {
       const sunriseTime = sunriseHour + ':' + sunriseMinutes;
 
       const sunsetDate = new Date(data.sys.sunset * 1000)
-      let sunsetHour = sunsetDate.getHours();
-      let sunsetMinutes = sunsetDate.getMinutes();
+      let sunsetHour = sunsetDate.getUTCHours() + timeDif;
+      if (sunsetHour <= 0) {
+        sunsetHour = timeDif + (24 + sunsetHour.getUTCHours());
+      }
+      let sunsetMinutes = sunsetDate.getUTCMinutes();
 
       if (sunsetHour < 10) {
         sunsetHour = '0' + sunsetHour;
@@ -65,6 +72,7 @@ class App extends React.Component {
       }
 
       const sunsetTime = sunsetHour + ':' + sunsetMinutes;
+      console.log(data, sunriseTime, sunsetTime);
 
       this.setState({
         temperature: data.main.temp,
@@ -101,7 +109,7 @@ class App extends React.Component {
         description: undefined,
         sunrise: undefined,
         sunset: undefined,
-        error: 'Please enter the city name correctly.'
+        error: 'Please enter the city (country) name correctly.'
       });
     }
   }
@@ -110,6 +118,8 @@ class App extends React.Component {
     return (
       <div>
         <div className="wrapper">
+          <div className="dyn-1"></div>
+          <div className="dyn-2"></div>
           <div className="main">
             <div className="container">
               <div className="row">
