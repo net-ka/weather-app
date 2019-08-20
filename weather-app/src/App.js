@@ -1,21 +1,30 @@
 import React from 'react';
+import "./App.css";
+import { countries } from 'country-data';
 
 import Titles from './components/Titles';
 import Form from './components/Form';
 import Weather from './components/Weather';
 
 const api = 'f7c1fddfc8e25ad4eb6f224be8db72e0';
+const api_photo = '1f58255b5a31b6ff84cf63304d9e5ff36f42369cc7d83579e07d7fa98ef48edb';
+const start_photo ='https://images.unsplash.com/photo-1541251680333-ae8ae4c943af?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80';
 
 class App extends React.Component {
   state = {
+    title: 'Your Weather App',
+    subtitle: 'Check the weather even before getting up',
     temperature: undefined,
     city: undefined,
     country: undefined,
+    country_full: undefined,
     humidity: undefined,
     wind: undefined,
     description: undefined,
     sunrise: undefined,
     sunset: undefined,
+    photo: start_photo,
+    opacity: 0,
     error: undefined
   }
 
@@ -27,6 +36,7 @@ class App extends React.Component {
 
     let api_call;
     let data;
+    let photo_url;
 
     if (city) {
       api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api}&units=metric`);
@@ -38,6 +48,11 @@ class App extends React.Component {
     }
 
     if (city && "name" in data) {
+      const api_photo_call = await fetch(`https://api.unsplash.com/search/photos/?client_id=${api_photo}&page=1&query=${city}-${country}`);
+      const data_photo = await api_photo_call.json();
+      const photo_url = data_photo.results[0].urls.full;
+      console.log(photo_url);
+
       const timeDif = data.timezone / 3600;
       const sunriseDate = new Date(data.sys.sunrise * 1000);
       let sunriseHour = sunriseDate.getUTCHours() + timeDif;
@@ -72,43 +87,59 @@ class App extends React.Component {
       }
 
       const sunsetTime = sunsetHour + ':' + sunsetMinutes;
-      console.log(data, sunriseTime, sunsetTime);
+
+      const country_name = countries[data.sys.country].name;
 
       this.setState({
+        title: undefined,
+        subtitle: undefined,
         temperature: data.main.temp,
         city: data.name,
         country: data.sys.country,
+        country_full: country_name,
         humidity: data.main.humidity,
         wind: data.wind.speed,
         description: data.weather[0].description,
         sunrise: sunriseTime,
         sunset: sunsetTime,
+        photo: photo_url,
+        opacity: 0.7,
         error: undefined
       });
     }
     if (!city) {
       this.setState({
+        title: 'Your Weather App',
+        subtitle: 'Check the weather even before getting up',
         temperature: undefined,
         city: undefined,
         country: undefined,
+        country_full: undefined,
         humidity: undefined,
         wind: undefined,
         description: undefined,
         sunrise: undefined,
         sunset: undefined,
+        photo: start_photo,
+        opacity: 0,
         error: 'Please enter the city value.'
       });
     }
     if (city && data.cod === '404') {
       this.setState({
+        title: 'Your Weather App',
+        subtitle: 'Check the weather even before getting up',
         temperature: undefined,
         city: undefined,
         country: undefined,
+        country_full: undefined,
         humidity: undefined,
         wind: undefined,
         description: undefined,
         sunrise: undefined,
         sunset: undefined,
+        photo: start_photo,
+        opacity: 0,
         error: 'Please enter the city (country) name correctly.'
       });
     }
@@ -123,8 +154,8 @@ class App extends React.Component {
           <div className="main">
             <div className="container">
               <div className="row">
-                <div className="col-xs-5 title-container">
-                  <Titles />
+                <div className="col-xs-5 title-container" style={{ background: `url(${this.state.photo}) center center no-repeat`}}>
+                  <Titles {...this.state} />
                 </div>
                 <div className="col-xs-7 form-container">
                   <Form getWeather={this.getWeather} />

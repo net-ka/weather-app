@@ -51,9 +51,10 @@ body {
 }
 
 .title-container {
+  position: relative;
   height: 90vh;
-  background: url("img/bg.jpg") center center no-repeat;
-  background-size: cover;
+  /* background: url("img/bg.jpg") center center no-repeat !important; */
+  background-size: cover !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -78,6 +79,24 @@ body {
   line-height: 2;
   color: #fff;
   font-family: "Merriweather", serif;
+}
+
+.location-container {
+  position: absolute;
+  bottom: 30px;
+  right: 20px;
+  background-color: #fff;
+  opacity: 0.7;
+  padding: 10px 20px 0;
+  font-size: 25px;
+  font-weight: 600;
+  text-align: right;
+  border-radius: 5px;
+}
+
+.location-container__country {
+  font-size: 15px;
+  text-transform: uppercase;
 }
 
 .form-container {
@@ -127,11 +146,15 @@ button:hover {
 }
 
 .weather__key {
+  box-sizing: border-box;
   color: #DB7093;
-  border-bottom: solid 2px #696969;
+  /* border-bottom: solid 2px #696969; */
   padding: 20px 0;
   font-weight: 400;
+  animation: weather-underline 10s linear 1 forwards;
 }
+
+@keyframes weather-underline { from { border-bottom: solid 2px #2c3e50; } to { border-bottom: solid 2px #696969; }  }
 
 .weather__key:last-child {
   border: 0;
