@@ -2,7 +2,7 @@ import React from 'react';
 import "./App.css";
 import { countries } from 'country-data';
 
-import Titles from './components/Titles';
+import Media from './components/Media';
 import Form from './components/Form';
 import Weather from './components/Weather';
 
@@ -12,8 +12,6 @@ const start_photo ='https://images.unsplash.com/photo-1541251680333-ae8ae4c943af
 
 class App extends React.Component {
   state = {
-    title: 'Your Weather App',
-    subtitle: 'Check the weather even before getting up',
     temperature: undefined,
     city: undefined,
     country: undefined,
@@ -25,6 +23,7 @@ class App extends React.Component {
     sunset: undefined,
     photo: start_photo,
     opacity: 0,
+    titleVisibile: true,
     error: undefined
   }
 
@@ -36,7 +35,7 @@ class App extends React.Component {
 
     let api_call;
     let data;
-    let photo_url;
+    // let photo_url;
 
     if (city) {
       api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api}&units=metric`);
@@ -91,8 +90,6 @@ class App extends React.Component {
       const country_name = countries[data.sys.country].name;
 
       this.setState({
-        title: undefined,
-        subtitle: undefined,
         temperature: data.main.temp,
         city: data.name,
         country: data.sys.country,
@@ -104,13 +101,12 @@ class App extends React.Component {
         sunset: sunsetTime,
         photo: photo_url,
         opacity: 0.7,
+        titleVisibile: false,
         error: undefined
       });
     }
     if (!city) {
       this.setState({
-        title: 'Your Weather App',
-        subtitle: 'Check the weather even before getting up',
         temperature: undefined,
         city: undefined,
         country: undefined,
@@ -122,13 +118,12 @@ class App extends React.Component {
         sunset: undefined,
         photo: start_photo,
         opacity: 0,
+        titleVisibile: false,
         error: 'Please enter the city value.'
       });
     }
     if (city && data.cod === '404') {
       this.setState({
-        title: 'Your Weather App',
-        subtitle: 'Check the weather even before getting up',
         temperature: undefined,
         city: undefined,
         country: undefined,
@@ -140,6 +135,7 @@ class App extends React.Component {
         sunset: undefined,
         photo: start_photo,
         opacity: 0,
+        titleVisibile: false,
         error: 'Please enter the city (country) name correctly.'
       });
     }
@@ -154,11 +150,15 @@ class App extends React.Component {
           <div className="main">
             <div className="container">
               <div className="row">
-                <div className="col-xs-5 title-container" style={{ background: `url(${this.state.photo}) center center no-repeat`}}>
-                  <Titles {...this.state} />
-                </div>
-                <div className="col-xs-7 form-container">
+                <div className="col-xs-12 form-container">
                   <Form getWeather={this.getWeather} />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-xs-6 media-container" style={{ background: `url(${this.state.photo}) center center no-repeat`}}>
+                  <Media {...this.state} />
+                </div>
+                <div className="col-xs-6 weather-container">
                   <Weather {...this.state}/>
                 </div>
               </div>
