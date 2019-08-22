@@ -38,11 +38,11 @@ class App extends React.Component {
     // let photo_url;
 
     if (city) {
-      api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api}&units=metric`);
+      api_call = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api}&units=metric`);
       data = await api_call.json();
     }
     if (city && country) {
-      api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${api}&units=metric`);
+      api_call = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${api}&units=metric`);
       data = await api_call.json();
     }
 
