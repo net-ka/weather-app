@@ -50,7 +50,6 @@ class App extends React.Component {
       const api_photo_call = await fetch(`https://api.unsplash.com/search/photos/?client_id=${api_photo}&page=1&query=${city}-${country}`);
       const data_photo = await api_photo_call.json();
       const photo_url = data_photo.results[0].urls.full;
-      console.log(photo_url);
 
       const timeDif = data.timezone / 3600;
       const sunriseDate = new Date(data.sys.sunrise * 1000);
